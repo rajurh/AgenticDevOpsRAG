@@ -1,0 +1,4 @@
+{
+  "meta": {"title": "Security and Compliance", "source": "security-policy"},
+  "text": "Security and compliance requirements: All code must pass security scanning before deployment. Use Dependabot or similar tools to detect vulnerable dependencies. Enable multi-factor authentication for all team members. Follow principle of least privilege for access controls. Encrypt data at rest and in transit. Conduct security reviews for major features. Keep audit logs for compliance. Apply security patches within 48 hours of release. Use network security groups and private endpoints for Azure resources. Implement rate limiting and DDoS protection."
+}

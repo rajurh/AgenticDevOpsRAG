@@ -1,0 +1,4 @@
+{
+  "meta": {"title": "Azure Deployment Best Practices", "source": "cloud-handbook"},
+  "text": "Azure deployment best practices: Use Azure App Service or Azure Container Apps for web applications. Configure auto-scaling based on metrics. Enable Application Insights for monitoring and diagnostics. Use Azure Key Vault for secrets management. Implement health check endpoints at /health or /api/health. Configure deployment slots for blue-green deployments. Use managed identities for secure authentication between Azure services. Enable diagnostic logs and integrate with Log Analytics workspace."
+}

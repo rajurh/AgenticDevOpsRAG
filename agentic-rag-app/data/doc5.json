@@ -1,0 +1,4 @@
+{
+  "meta": {"title": "Incident Response Procedures", "source": "sre-runbook"},
+  "text": "Incident response procedures: When production issues occur, create an incident ticket immediately. Assess severity level (P0-critical, P1-high, P2-medium, P3-low). For P0 incidents, page on-call engineer and assemble incident response team. Use the incident communication channel to coordinate. Focus on mitigation first, root cause analysis later. Document timeline and actions taken. Conduct blameless postmortem within 48 hours. Update runbooks with lessons learned. Test incident response plan quarterly."
+}

@@ -1,0 +1,4 @@
+{
+  "meta": {"title": "Release Process Overview", "source": "internal-handbook"},
+  "text": "Release process: feature branch -> PR -> CI checks -> staging deployment -> QA signoff -> production deploy. Use semantic versioning for releases and tag the release commit. Coordinate major releases with stakeholders and update release notes in the changelog. For hotfixes, create a hotfix branch from main and follow the hotfix flow."
+}

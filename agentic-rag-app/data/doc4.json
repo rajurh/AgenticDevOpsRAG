@@ -1,0 +1,4 @@
+{
+  "meta": {"title": "CI/CD Pipeline Guidelines", "source": "devops-standards"},
+  "text": "CI/CD pipeline guidelines: Use GitHub Actions for automated workflows. Include linting, testing, and security scanning in pull request checks. Run unit tests and integration tests in the CI pipeline. Use environment-specific configurations for dev, staging, and production. Implement approval gates for production deployments. Store secrets in GitHub Secrets or Azure Key Vault. Use container scanning tools to detect vulnerabilities. Generate and archive build artifacts. Tag releases with semantic versioning."
+}

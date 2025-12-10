@@ -1,0 +1,4 @@
+{
+  "meta": {"title": "Deployment Checklist", "source": "ops-runbook"},
+  "text": "Deployment checklist: 1) Ensure CI passing, 2) Run migration scripts in staging, 3) Backup database, 4) Notify users of maintenance window, 5) Monitor metrics and logs for 30 minutes after deployment, 6) Roll back if critical errors occur. Use feature flags to progressively roll out risky changes."
+}
