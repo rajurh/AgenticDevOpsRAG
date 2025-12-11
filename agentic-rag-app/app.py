@@ -17,7 +17,8 @@ EMBEDDING_URL = os.getenv("AZURE_OPENAI_EMBEDDING_URL")
 CHAT_URL = os.getenv("AZURE_OPENAI_CHAT_URL")
 API_KEY = os.getenv("AZURE_OPENAI_KEY")
 TOP_K = int(os.getenv("TOP_K", "3"))
-secret= "ghp_DUMMY_0123456789ABCDEFGHIJKLMNOPQRSTUV"
+secret= "ghp_0123456789ABCDEFGHIJKLMNOPQRSTUV"
+password= "Paaaassword!"
 
 if not (EMBEDDING_URL and CHAT_URL and API_KEY):
     # We don't raise here to allow local dev without secrets; endpoints will error if used.
