@@ -8,7 +8,6 @@ __pycache__
 .env.*
 .git
 .gitignore
-docker/
 README.md
 tests/
 *.log
