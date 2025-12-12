@@ -45,7 +45,7 @@ if (Test-Path ".env") {
 
 Write-Host "`n✅ Setup complete!" -ForegroundColor Green
 Write-Host "`nTo run the application:" -ForegroundColor Cyan
-Write-Host "  Backend API:  .\run-backend.ps1" -ForegroundColor White
-Write-Host "  Frontend UI:  .\run-frontend.ps1" -ForegroundColor White
-Write-Host "`nOr run both with:" -ForegroundColor Cyan
+# Write-Host "  Backend API:  .\run-backend.ps1" -ForegroundColor White
+# Write-Host "  Frontend UI:  .\run-frontend.ps1" -ForegroundColor White
+# Write-Host "`nOr run both with:" -ForegroundColor Cyan
 Write-Host "  .\run-app.ps1" -ForegroundColor White
