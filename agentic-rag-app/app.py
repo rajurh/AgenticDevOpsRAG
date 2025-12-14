@@ -3,6 +3,7 @@ import glob
 import json
 import asyncio
 from typing import List
+import time
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
@@ -11,7 +12,7 @@ from dotenv import load_dotenv
 from rag_core import AzureOpenAIClient, RAG
 from vector_store import InMemoryVectorStore
 from logging_config import logger
-from errors import wrap_error, ConfigError, AppError
+from errors import wrap_error, ConfigError, AppError, ExternalAPIError
 
 load_dotenv()  # load from .env if present
 
@@ -33,6 +34,9 @@ class QueryRequest(BaseModel):
 # Initialize components lazily
 _client: AzureOpenAIClient | None = None
 _rag: RAG | None = None
+_health_cache: dict | None = None
+_health_cache_time: float = 0
+HEALTH_CACHE_TTL = 30  # Cache health check results for 30 seconds
 
 
 async def get_client() -> AzureOpenAIClient:
@@ -74,6 +78,58 @@ async def get_rag() -> RAG:
         vs.add_documents(embedded)
         _rag = RAG(client=client, vector_store=vs, top_k=TOP_K)
     return _rag
+
+
+@app.get("/health")
+async def health_endpoint():
+    """Health check endpoint that returns app status and Azure OpenAI connection state.
+    
+    Results are cached for HEALTH_CACHE_TTL seconds to avoid excessive API calls.
+    """
+    global _health_cache, _health_cache_time
+    
+    # Return cached result if still valid
+    current_time = time.time()
+    if _health_cache and (current_time - _health_cache_time) < HEALTH_CACHE_TTL:
+        return JSONResponse(_health_cache)
+    
+    health_status = {
+        "status": "ok",
+        "azure_openai": {
+            "configured": False,
+            "connection": "unknown"
+        }
+    }
+    
+    # Check if Azure OpenAI is configured
+    if EMBEDDING_URL and CHAT_URL and API_KEY:
+        health_status["azure_openai"]["configured"] = True
+        
+        # Try to test the connection by checking if client can be initialized
+        try:
+            client = await get_client()
+            # Test a simple embedding to verify connection
+            test_text = "health check"
+            await client.embed_text(test_text)
+            health_status["azure_openai"]["connection"] = "healthy"
+        except ConfigError as e:
+            health_status["azure_openai"]["connection"] = "configuration_error"
+            health_status["status"] = "degraded"
+        except ExternalAPIError as e:
+            health_status["azure_openai"]["connection"] = "api_error"
+            health_status["status"] = "degraded"
+        except Exception as e:
+            health_status["azure_openai"]["connection"] = "error"
+            health_status["status"] = "degraded"
+    else:
+        health_status["azure_openai"]["configured"] = False
+        health_status["status"] = "degraded"
+    
+    # Cache the result
+    _health_cache = health_status
+    _health_cache_time = current_time
+    
+    return JSONResponse(health_status)
 
 
 @app.post("/api/query")
