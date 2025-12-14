@@ -20,7 +20,7 @@ with st.sidebar:
     if st.button("Check backend health"):
         with st.spinner("Checking backend health..."):
             try:
-                resp = requests.get(f"{API_BASE}/health", timeout=30)
+                resp = requests.get(f"{API_BASE}/health", timeout=10)
                 resp.raise_for_status()
                 health_data = resp.json()
                 
