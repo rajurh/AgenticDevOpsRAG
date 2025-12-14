@@ -16,6 +16,40 @@ with st.sidebar:
         API_BASE = api_base
     
     st.markdown("---")
+    st.subheader("🔧 Diagnostics")
+    if st.button("Check backend health"):
+        with st.spinner("Checking backend health..."):
+            try:
+                resp = requests.get(f"{API_BASE}/health", timeout=30)
+                resp.raise_for_status()
+                health_data = resp.json()
+                
+                # Display health status
+                status = health_data.get("status", "unknown")
+                if status == "ok":
+                    st.success(f"✅ Backend status: {status}")
+                else:
+                    st.warning(f"⚠️ Backend status: {status}")
+                
+                # Display Azure OpenAI connection status
+                azure_info = health_data.get("azure_openai", {})
+                configured = azure_info.get("configured", False)
+                connection = azure_info.get("connection", "unknown")
+                
+                if configured:
+                    st.info(f"🔧 Azure OpenAI: Configured")
+                    if connection == "healthy":
+                        st.success(f"✅ Connection: {connection}")
+                    else:
+                        st.error(f"❌ Connection: {connection}")
+                else:
+                    st.error("❌ Azure OpenAI: Not configured")
+                    
+            except requests.exceptions.RequestException as e:
+                logger.exception("Health check failed")
+                st.error(f"❌ Backend health check failed: {e}")
+    
+    st.markdown("---")
     st.subheader("📝 Sample Questions")
     st.markdown("""
     - What is our release process?

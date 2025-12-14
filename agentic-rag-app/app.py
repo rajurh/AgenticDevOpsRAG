@@ -76,6 +76,44 @@ async def get_rag() -> RAG:
     return _rag
 
 
+@app.get("/health")
+async def health_endpoint():
+    """Health check endpoint that returns app status and Azure OpenAI connection state."""
+    health_status = {
+        "status": "ok",
+        "azure_openai": {
+            "configured": False,
+            "connection": "unknown"
+        }
+    }
+    
+    # Check if Azure OpenAI is configured
+    if EMBEDDING_URL and CHAT_URL and API_KEY:
+        health_status["azure_openai"]["configured"] = True
+        
+        # Try to test the connection by checking if client can be initialized
+        try:
+            client = await get_client()
+            # Test a simple embedding to verify connection
+            test_text = "health check"
+            await client.embed_text(test_text)
+            health_status["azure_openai"]["connection"] = "healthy"
+        except ConfigError as e:
+            health_status["azure_openai"]["connection"] = "configuration_error"
+            health_status["status"] = "degraded"
+        except ExternalAPIError as e:
+            health_status["azure_openai"]["connection"] = "api_error"
+            health_status["status"] = "degraded"
+        except Exception as e:
+            health_status["azure_openai"]["connection"] = "error"
+            health_status["status"] = "degraded"
+    else:
+        health_status["azure_openai"]["configured"] = False
+        health_status["status"] = "degraded"
+    
+    return JSONResponse(health_status)
+
+
 @app.post("/api/query")
 async def query_endpoint(q: QueryRequest):
     try:

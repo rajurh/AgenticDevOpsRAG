@@ -38,14 +38,14 @@ class InMemoryVectorStore:
             return []
         try:
             q = np.asarray(query_embedding, dtype=float)
-        # compute cosine similarities
-        embs = np.stack([it["embedding"] for it in self._items], axis=0)
-        # normalize
-        embs_norm = embs / (np.linalg.norm(embs, axis=1, keepdims=True) + 1e-12)
-        q_norm = q / (np.linalg.norm(q) + 1e-12)
-        sims = embs_norm.dot(q_norm)
-        # get top_k indices
-        idx = np.argsort(-sims)[:top_k]
+            # compute cosine similarities
+            embs = np.stack([it["embedding"] for it in self._items], axis=0)
+            # normalize
+            embs_norm = embs / (np.linalg.norm(embs, axis=1, keepdims=True) + 1e-12)
+            q_norm = q / (np.linalg.norm(q) + 1e-12)
+            sims = embs_norm.dot(q_norm)
+            # get top_k indices
+            idx = np.argsort(-sims)[:top_k]
             results = []
             for i in idx:
                 orig = self._items[i]
