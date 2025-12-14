@@ -23,7 +23,7 @@ if (Test-Path ".venv") {
 
 # Activate virtual environment and install dependencies
 Write-Host "`n📥 Installing dependencies..." -ForegroundColor Cyan
-.\.venv\Scripts\pip.exe install --upgrade pip
+# .\.venv\Scripts\pip.exe install --upgrade pip
 .\.venv\Scripts\pip.exe install -r requirements.txt
 
 if ($LASTEXITCODE -eq 0) {

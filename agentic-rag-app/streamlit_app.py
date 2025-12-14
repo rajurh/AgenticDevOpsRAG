@@ -1,6 +1,7 @@
 import os
 import requests
 import streamlit as st
+from logging_config import logger
 
 API_BASE = os.getenv("RAG_BASE", "http://127.0.0.1:8001")
 
@@ -31,9 +32,14 @@ if st.button("🔍 Ask", type="primary"):
         st.warning("Please enter a question.")
     else:
         with st.spinner("Searching knowledge base..."):
-            resp = requests.post(f"{API_BASE}/api/query", json={"query": query}, timeout=120)
-            resp.raise_for_status()
-            data = resp.json()
+            try:
+                resp = requests.post(f"{API_BASE}/api/query", json={"query": query}, timeout=120)
+                resp.raise_for_status()
+                data = resp.json()
+            except requests.exceptions.RequestException as e:
+                logger.exception("Request to backend failed")
+                st.error(f"Backend request failed: {e}")
+                data = None
 
         if data:
             st.success("✅ Answer generated")

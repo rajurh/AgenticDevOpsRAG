@@ -2,6 +2,13 @@ import os
 import asyncio
 from typing import List, Dict, Any
 import httpx
+import logging
+
+from errors import ExternalAPIError, ConfigError
+
+
+logger = logging.getLogger(__name__)
+
 
 class AzureOpenAIClient:
     """Lightweight client for Azure OpenAI-style endpoints.
@@ -18,7 +25,7 @@ class AzureOpenAIClient:
 
     async def embed_text(self, text: str) -> List[float]:
         if not self.embedding_url:
-            raise RuntimeError("Embedding URL is not configured (AZURE_OPENAI_EMBEDDING_URL).")
+            raise ConfigError("Embedding URL is not configured (AZURE_OPENAI_EMBEDDING_URL).")
         payload = {"input": text}
         headers = {"api-key": self.api_key, "Content-Type": "application/json"}
         try:
@@ -28,15 +35,19 @@ class AzureOpenAIClient:
             # follow Azure OpenAI embedding response shape: {data: [{embedding: [...]}], ...}
             return body["data"][0]["embedding"]
         except Exception as e:
-            # raise a clearer error for the caller
-            raise RuntimeError(f"Failed to get embedding from Azure OpenAI: {e}")
+            logger.exception("Failed to fetch embedding")
+            raise ExternalAPIError(f"Failed to get embedding from Azure OpenAI: {e}")
 
     async def chat_completion(self, messages: List[Dict[str, str]], max_tokens: int = 512, temperature: float = 0.0) -> str:
         payload = {"messages": messages, "max_tokens": max_tokens, "temperature": temperature}
         headers = {"api-key": self.api_key, "Content-Type": "application/json"}
-        resp = await self._client.post(self.chat_url, json=payload, headers=headers)
-        resp.raise_for_status()
-        body = resp.json()
+        try:
+            resp = await self._client.post(self.chat_url, json=payload, headers=headers)
+            resp.raise_for_status()
+            body = resp.json()
+        except Exception as e:
+            logger.exception("Chat completion request failed")
+            raise ExternalAPIError(f"Failed to get chat completion: {e}")
         # Azure chat response shape may be {choices: [{message: {content: "..."}}], ...}
         # Some previews use choices[0].message.content
         choice = body.get("choices", [None])[0]
