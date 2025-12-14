@@ -74,11 +74,13 @@ The application consists of three main components running in a single container:
 
 ### Option 1: Docker (Recommended)
 
-1. **Build the Docker image**:
+1. **Navigate to the application directory and build the Docker image**:
    ```bash
    cd agentic-rag-app
    docker build -t agentic-rag-app:local .
    ```
+   
+   Note: The Dockerfile is located in the `agentic-rag-app` directory, which serves as the build context.
 
 2. **Run the container**:
    ```bash
@@ -171,6 +173,7 @@ https://<instance>.openai.azure.com/openai/deployments/<deployment>/chat/complet
 
 2. **Build and push image to ACR**:
    ```bash
+   # Navigate to the application directory (or use full path)
    cd agentic-rag-app
    az acr build -r $ACR_NAME -t agentic-rag-app:latest .
    ```
