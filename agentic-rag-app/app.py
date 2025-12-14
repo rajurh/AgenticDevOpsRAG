@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 from rag_core import AzureOpenAIClient, RAG
 from vector_store import InMemoryVectorStore
 from logging_config import logger
-from errors import wrap_error, ConfigError, AppError
+from errors import wrap_error, ConfigError, AppError, ExternalAPIError
 
 load_dotenv()  # load from .env if present
 
