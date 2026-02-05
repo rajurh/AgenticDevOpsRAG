@@ -76,6 +76,11 @@ async def get_rag() -> RAG:
     return _rag
 
 
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy"}
+
+
 @app.post("/api/query")
 async def query_endpoint(q: QueryRequest):
     try:
