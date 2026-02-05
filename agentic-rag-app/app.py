@@ -78,7 +78,7 @@ async def get_rag() -> RAG:
 
 @app.get("/health")
 async def health_check():
-    return JSONResponse(status_code=200, content={"status": "healthy"})
+    return {"status": "healthy"}
 
 
 @app.post("/api/query")
